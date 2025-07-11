@@ -5,8 +5,8 @@
                         | - speed: int       |
                         +--------------------+
                         | + doRun()          |
-                        | + whatIsYourName() |
-                        | + whatIsYourSpeed()|
+                        | + tellYourName()   |
+                        | + tellYourSpeed()  |
                         +--------------------+
                                  ▲
               ┌──────────────────┴──────────────────┐
