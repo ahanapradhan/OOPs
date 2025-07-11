@@ -23,18 +23,34 @@ public:
 
 // --- Tom Class ---
 class Cat : public Character {
+private:
+    vector<Trap*> traps;  // Aggregated traps
+
 public:
     Cat(int s) : Character("Tom", s) {}
+
+    void addTrap(Trap* trap) {
+        traps.push_back(trap);
+    }
 
     void doChase(Character& target) {
         cout << name << " is chasing " << target.tellYourName() << "!\n";
         if (speed > target.tellYourSpeed())
-            cout << name << " caught " << target.tellYourtName() << "!\n";
+            cout << name << " caught " << target.tellYourName() << "!\n";
         else
             cout << target.tellYourName() << " escaped!\n";
     }
 
-    void placeTrap(class Trap* trap, Character& target);
+    void deployTraps(Character& target) {
+        for (Trap* trap : traps) {
+            placeTrap(trap, target);
+        }
+    }
+
+    void placeTrap(Trap* trap, Character& target) {
+        cout << name << " places a trap for " << target.tellYourName() << "...\n";
+        trap->activate(target);
+    }
 };
 
 // --- Jerry Class ---
@@ -71,11 +87,6 @@ public:
     }
 };
 
-// Tom placing traps
-void Tom::placeTrap(Trap* trap, Character& target) {
-    cout << name << " places a trap for " << target.tellYourName() << "...\n";
-    trap->activate(target);
-}
 
 int main() {
     Cat tom(5);
@@ -89,13 +100,12 @@ int main() {
     MouseTrap mt;
     BananaPeel bp;
 
-    // Use polymorphism: base pointer -> derived objects
-    vector<Trap*> traps = { &mt, &bp };
+    // Tom aggregates (references) the traps
+    tom.addTrap(&mt);
+    tom.addTrap(&bp);
 
-    // Tom sets traps for Jerry
-    for (Trap* t : traps) {
-        tom.placeTrap(t, jerry);
-    }
+    // Tom deploys all his traps on Jerry
+    tom.deployTraps(jerry);
 
     return 0;
 }
