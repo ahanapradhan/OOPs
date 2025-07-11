@@ -13,34 +13,34 @@ protected:
 public:
     Character(string n, int s) : name(n), speed(s) {}
 
-    virtual void run() {
+    virtual void doRun() {
         cout << name << " is running at speed " << speed << endl;
     }
 
-    string getName() const { return name; }
-    int getSpeed() const { return speed; }
+    string tellYourName() const { return name; }
+    int tellYourSpeed() const { return speed; }
 };
 
 // --- Tom Class ---
-class Tom : public Character {
+class Cat : public Character {
 public:
-    Tom(int s) : Character("Tom", s) {}
+    Cat(int s) : Character("Tom", s) {}
 
-    void chase(Character& target) {
-        cout << name << " is chasing " << target.getName() << "!\n";
-        if (speed > target.getSpeed())
-            cout << name << " caught " << target.getName() << "!\n";
+    void doChase(Character& target) {
+        cout << name << " is chasing " << target.tellYourName() << "!\n";
+        if (speed > target.tellYourSpeed())
+            cout << name << " caught " << target.tellYourtName() << "!\n";
         else
-            cout << target.getName() << " escaped!\n";
+            cout << target.tellYourName() << " escaped!\n";
     }
 
     void placeTrap(class Trap* trap, Character& target);
 };
 
 // --- Jerry Class ---
-class Jerry : public Character {
+class Mouse : public Character {
 public:
-    Jerry(int s) : Character("Jerry", s) {}
+    Mouse(int s) : Character("Jerry", s) {}
 };
 
 // --- Trap Base Class ---
@@ -54,11 +54,11 @@ public:
 class MouseTrap : public Trap {
 public:
     void activate(Character& target) override {
-        cout << "A MouseTrap snaps near " << target.getName() << "!\n";
-        if (target.getSpeed() < 6)
-            cout << target.getName() << " gets caught!\n";
+        cout << "A MouseTrap snaps near " << target.tellYourName() << "!\n";
+        if (target.tellYourSpeed() < 6)
+            cout << target.tellYourName() << " gets caught!\n";
         else
-            cout << target.getName() << " dodges the trap!\n";
+            cout << target.tellYourName() << " dodges the trap!\n";
     }
 };
 
@@ -66,24 +66,24 @@ public:
 class BananaPeel : public Trap {
 public:
     void activate(Character& target) override {
-        cout << target.getName() << " slips on a Banana Peel!\n";
-        cout << target.getName() << "'s speed is reduced!\n";
+        cout << target.tellYourName() << " slips on a Banana Peel!\n";
+        cout << target.tellYourName() << "'s speed is reduced!\n";
     }
 };
 
 // Tom placing traps
 void Tom::placeTrap(Trap* trap, Character& target) {
-    cout << name << " places a trap for " << target.getName() << "...\n";
+    cout << name << " places a trap for " << target.tellYourName() << "...\n";
     trap->activate(target);
 }
 
 int main() {
-    Tom tom(5);
-    Jerry jerry(7);
+    Cat tom(5);
+    Mouse jerry(7);
 
-    tom.run();
-    jerry.run();
-    tom.chase(jerry);
+    tom.doRun();
+    jerry.doRun();
+    tom.doChase(jerry);
 
     // Create traps
     MouseTrap mt;
