@@ -11,7 +11,9 @@ protected:
     int speed;
 
 public:
+
     Character(string n, int s) : name(n), speed(s) {}
+    virtual ~Character() = default;
 
     virtual void doRun() {
         cout << name << " is running at speed " << speed << endl;
@@ -21,19 +23,33 @@ public:
     int tellYourSpeed() const { return speed; }
 };
 
+// --- Trap Base Class ---
+class Trap {
+public:
+    virtual void activate(Character& target) = 0; // pure virtual
+    virtual ~Trap() = default;
+};
+
 // --- Tom Class ---
 class Cat : public Character {
-private:
     vector<Trap*> traps;  // Aggregated traps
 
+    void placeTrap(Trap* trap, Character& target) const {
+        cout << name << " places a trap for " << target.tellYourName() << "...\n";
+        trap->activate(target);
+    }
 public:
     Cat(int s) : Character("Tom", s) {}
+    ~Cat() override {
+        traps.clear();
+        cout << "Cat destroyed" << endl;
+    }
 
     void addTrap(Trap* trap) {
         traps.push_back(trap);
     }
 
-    void doChase(Character& target) {
+    void doChase(const Character& target) const {
         cout << name << " is chasing " << target.tellYourName() << "!\n";
         if (speed > target.tellYourSpeed())
             cout << name << " caught " << target.tellYourName() << "!\n";
@@ -41,15 +57,10 @@ public:
             cout << target.tellYourName() << " escaped!\n";
     }
 
-    void deployTraps(Character& target) {
+    void deployTraps(Character& target) const {
         for (Trap* trap : traps) {
             placeTrap(trap, target);
         }
-    }
-
-    void placeTrap(Trap* trap, Character& target) {
-        cout << name << " places a trap for " << target.tellYourName() << "...\n";
-        trap->activate(target);
     }
 };
 
@@ -57,14 +68,11 @@ public:
 class Mouse : public Character {
 public:
     Mouse(int s) : Character("Jerry", s) {}
+    ~Mouse() override {
+        cout << "Mouse destroyed" << endl;
+    }
 };
 
-// --- Trap Base Class ---
-class Trap {
-public:
-    virtual void activate(Character& target) = 0; // pure virtual
-    virtual ~Trap() {}
-};
 
 // --- MouseTrap (derived from Trap) ---
 class MouseTrap : public Trap {
@@ -108,4 +116,6 @@ int main() {
     tom.deployTraps(jerry);
 
     return 0;
-}
+}//
+// Created by ahanapradhan on 16/07/25.
+//
