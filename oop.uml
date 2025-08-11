@@ -1,45 +1,201 @@
-+--------------------------------+
-|        Character               |
-+--------------------------------+
-| # name: string                 |
-| # speed: int                   |
-+--------------------------------+
-| + Character(n: string, s: int) |
-| + doRun(): void                |
-| + tellYourName(): string       |
-| + tellYourSpeed(): int         |
-+--------------------------------+
-              ▲
-        ______|__________________________________________________________
-       |                                                                |
-+----------------------------------------------------+           +-------------+
-|     Cat                                            |           |    Mouse    |
-+----------------------------------------------------+           +-------------+
-|                                                    |           |             |
-+----------------------------------------------------+           +-------------+
-| + Cat(s: int)                                      |
-| + doChase(target: Character&): void                |
-| + placeTrap(trap: Trap*, target: Character&): void |
-+----------------------------------------------------+
-              |
-   uses       |
-              |
-              v
-+------------------------------------------+
-|            Trap                          |  <<abstract>>
-+------------------------------------------+
-|                                          |
-+------------------------------------------+
-| + activate(target: Character&): void = 0 |
-| + ~Trap()                                |
-+------------------------------------------+
-              ▲
-        ______|__________________
-       |                         |
-+-------------------+   +--------------------+
-|    MouseTrap      |   |    BananaPeel      |
-+-------------------+   +--------------------+
-|                   |   |                    |
-+-------------------+   +--------------------+
-| + activate(target: Character&): void |
-+-------------------+   +--------------------+
+@startuml
+
+
+
+' Data Types
+class Address {
+  +streetAddress: string
+  +city: string
+  +state: string
+  +zipcode: string
+  +country: string
+}
+
+' Classes and relationships
+
+class WeeklySchedule {
+  +dayOfWeek: int
+  +departureTime: Time
+}
+WeeklySchedule "0..*" -- "1" Flight : has
+
+
+class Flight {
+  +flightNumber: string
+  +departure: Airport
+  +arrival: Airport
+  +durationInMinutes: int
+  +getInstances(): list<FlightInstance>
+  +cancel(): bool
+  +addFlightSchedule(): bool
+}
+Flight "1" -- "*" FlightInstance : has
+Flight "*" -- "*" Airport : "lands on/departs from"
+Flight "*" -- "*" Airport : contains
+
+class FlightInstance {
+  +departureTime: Time
+  +gate: string
+  +status: FlightStatus
+  +cancel(): bool
+  +updateStatus(): void
+}
+FlightInstance "*" -- "*" Crew : assigned to
+FlightInstance "*" -- "*" Pilot : assigned to
+FlightInstance "*" -- "1" Aircraft : assigned to
+FlightInstance "1" -- "*" FlightReservation : against
+
+class Airline {
+  +name: string
+  +code: string
+  +getFlights(): list<Flight>
+}
+Airline "1" o-- "*" Flight : owns
+Airline "1" o-- "*" Aircraft : owns
+
+class Aircraft {
+  +name: string
+  +modal: string
+  +manufacturingYear: int
+  +getFlights(): list<Flight>
+}
+Aircraft "1" -- "1" FlightInstance : assigned to
+Aircraft "1" *-- "*" Seat : has
+
+class Seat {
+  +seatNumber: string
+  +type: SeatType
+  +class: SeatClass
+  +getSeatType(): SeatType
+}
+Seat <|-- FlightSeat
+
+class FlightSeat {
+  +fare: float
+  +reservationNumber: string
+  +getFare(): float
+}
+FlightSeat "*" -- "0..1" FlightReservation : assigned to
+
+class FlightReservation {
+  +reservationNumber: string
+  +flight: FlightInstance
+  +seatMap: map<Passenger, FlightSeat>
+  +status: ReservationStatus
+  +getPassengers(): list<Passenger>
+}
+FlightReservation "1" -- "*" Passenger : has
+FlightReservation "1" -- "1" Payment : has
+
+class Payment {
+  +paymentID: int
+  +amount: double
+  +status: PaymentStatus
+  +makeTransaction(): bool
+}
+Payment <|-- CreditCardTransaction
+Payment <|-- UPITransaction
+Payment <|-- CashTransaction
+
+class CreditCardTransaction {
+  +nameOnCard: string
+}
+class UPITransaction {
+  +bankName: string
+  +UPIid: string
+}
+class CashTransaction {
+  +cashTendered: double
+}
+
+class EmailNotification {
+  +email: string
+}
+
+class SmsNotification {
+  +email: string
+}
+
+class Notification {
+  +notificationId: int
+  +createdOn: date
+  +content: string
+  +send(): bool
+}
+Notification <|-- EmailNotification
+Notification <|-- SmsNotification
+
+class Airport {
+  +name: string
+  +address: Address
+  +code: string
+  +getFlights(): list<Flight>
+}
+class Person {
+  +name: string
+  +address: Address
+  +email: string
+  +phone: string
+}
+
+class UserAccount {
+  +id: string
+  +password: string
+  +status: AccountStatus
+  +resetPassword(): bool
+}
+Person <|-- UserAccount
+
+UserAccount <|-- Admin
+UserAccount <|-- Crew
+UserAccount <|-- Pilot
+UserAccount <|-- FrontDeskOfficer
+UserAccount <|-- Customer
+
+class Admin {
+  +addAircraft(): bool
+  +addFlight(): bool
+  +blockUser(): bool
+}
+
+class Crew {
+  +getFlights(): list<FlightInstance>
+}
+
+class Pilot {
+  +getFlights(): list<FlightInstance>
+}
+
+class FrontDeskOfficer {
+  +createItinerary(): bool
+}
+
+class Customer {
+  +frequentFlyerNumber: string
+  +getItineraries(): list<Itinerary>
+}
+
+class Itinerary {
+  +startingAirport: Airport
+  +finalAirport: Airport
+  +creationDate: date
+  +getReservations(): list<FlightReservation>
+  +makeReservation(): bool
+  +makePayment(): bool
+}
+Itinerary "1" -- "*" FlightReservation : creates
+Customer "1" -- "*" Itinerary : creates
+
+class Passenger {
+  +name: string
+  +passportNumber: string
+  +dateOfBirth: date
+  +getPassportNumber(): string
+}
+Passenger "*" -- "*" FlightReservation : has
+
+Person o-- Address
+
+FlightReservation -- Notification: creates
+
+@enduml
