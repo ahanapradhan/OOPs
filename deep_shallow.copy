@@ -55,7 +55,7 @@ public:
 
     // Destructor
     ~Book() {
-        cout << this->name << " will be destroyed now.." << endl;
+        cout << this->title << " will be destroyed now.." << endl;
         delete[] chapters;
     }
 };
