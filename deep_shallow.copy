@@ -1,0 +1,89 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Book {
+    string title;
+    string* chapters; // dynamic array of chapter names
+    int numChapters;
+
+public:
+    // Constructor
+    Book(const string& t, int n){
+        this->title = t;
+        this->numChapters = n;
+        chapters = new string[numChapters];
+        for (int i = 0; i < numChapters; ++i) {
+            chapters[i] = "Chapter " + to_string(i + 1);
+        }
+    }
+
+    // Copy Constructor: shallow or deep copy
+    Book(const Book& b, bool shallow) {
+        if (shallow) {
+            title = b.title;
+            chapters = b.chapters;  // shallow: share the same array
+            numChapters = b.numChapters;
+            cout << "Shallow copy created.\n";
+        } else {
+            // deep copy: create a new array
+            title = b.title;
+            numChapters = b.numChapters;
+            chapters = new string[numChapters];
+            for (int i = 0; i < numChapters; ++i) {
+                chapters[i] = b.chapters[i];
+            }
+            cout << "Deep copy created.\n";
+        }
+    }
+
+    // Modify a chapter
+    void setChapter(int index, const string& name) {
+        if (index >= 0 && index < numChapters) {
+            chapters[index] = name;
+        }
+    }
+
+    // Print book details
+    void print() const {
+        cout << "Title: " << title << "\nChapters:\n";
+        for (int i = 0; i < numChapters; ++i) {
+            cout << "  " << chapters[i] << "\n";
+        }
+        cout << endl;
+    }
+
+    // Destructor
+    ~Book() {
+        cout << this->name << " will be destroyed now.." << endl;
+        delete[] chapters;
+    }
+};
+
+int main() {
+    Book original("C++ Mastery", 3);
+    cout << "Original Book:\n";
+    original.print();
+
+    // Shallow copy
+    Book shallowCopy(original, true);
+    shallowCopy.setChapter(0, "Modified Chapter 1 in shallow copy");
+
+    cout << "\nAfter modifying shallow copy:\n";
+    cout << "Original Book:\n";
+    original.print();
+    cout << "Shallow Copy:\n";
+    shallowCopy.print();
+
+    // Deep copy
+    Book deepCopy(original, false);
+    deepCopy.setChapter(1, "Modified Chapter 2 in deep copy");
+
+    cout << "\nAfter modifying deep copy:\n";
+    cout << "Original Book:\n";
+    original.print();
+    cout << "Deep Copy:\n";
+    deepCopy.print();
+
+    return 0;
+}
