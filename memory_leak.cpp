@@ -117,8 +117,35 @@ void test_stack(){
 int main()
 {
     test_heap(); // final output has matching number of new and delete calls
+    /*
+new got memory 0x2158c925990
+new got memory 0x2158c9259c0
+[HeapPoint-0x7c5bdff6d8][string-0x2158c925990]: ahana_p1
+[HeapPoint-0x7c5bdff6d0][string-0x2158c9259c0]: ahana_p2
+[HeapPoint-0x7c5bdff6d8] Adding
+delete for 0x2158c925990
+new got memory 0x2158c925990
+[HeapPoint-0x7c5bdff6d8][string-0x2158c925990]: ahana_p1-add-ahana_p2
+[HeapPoint-0x7c5bdff6d0]HeapRef: before delete
+delete for 0x2158c9259c0
+[HeapPoint-0x7c5bdff6d0]HeapRef: After delete
+[HeapPoint-0x7c5bdff6d8]HeapRef: before delete
+delete for 0x2158c925990
+[HeapPoint-0x7c5bdff6d8]HeapRef: After delete
+    */
 
     test_stack(); // final output has mismatching number of new and delete calls
+    /*
+[StackPoint-0xa5073ffd18][string-0xa5073ffd40]: ahana_p1
+[StackPoint-0xa5073ffd10][string-0xa5073ffd20]: ahana_p2
+[StackPoint-0xa5073ffd18] Adding
+new got memory 0x1df96145990
+[StackPoint-0xa5073ffd18][string-0x1df96145990]: ahana_p1-add-ahana_p2
+[StackPoint-0xa5073ffd10]StackPoint: before delete
+[StackPoint-0xa5073ffd10]StackPoint: After delete
+[StackPoint-0xa5073ffd18]StackPoint: before delete
+[StackPoint-0xa5073ffd18]StackPoint: After delete
+        */
 
     return 0;
 }
