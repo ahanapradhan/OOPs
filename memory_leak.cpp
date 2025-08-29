@@ -40,7 +40,9 @@ class HeapPoint{
     showThis();
     cout << "[string-" << alias <<"]: " << *alias << endl;
   }
-  HeapPoint& /*returning reference*/ operator+ (const HeapPoint& other){
+
+  // receiving and returning references to avoid copy, returning pointer is also fine
+  HeapPoint& operator+ (const HeapPoint& other){
     showThis();
     cout <<" Adding" << endl;
     string temp = *alias;
@@ -75,7 +77,8 @@ public:
     cout << "[string-" << alias <<"]: " << *alias << endl;
   }
 
-  StackPoint& /*returning reference*/ operator+ (const StackPoint& other){
+// receiving and returning references to avoid copy, returning pointer is also fine
+  StackPoint& operator+ (const StackPoint& other){
     showThis();
     cout <<" Adding" << endl;
     string temp = *alias;
