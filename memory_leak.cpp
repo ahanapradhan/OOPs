@@ -2,7 +2,8 @@
 #include <string>
 using namespace std;
 
-
+/* globally overload the following operators to cout memory */
+// you can use these overloads in your code for debugging
 void* operator new(size_t size){
     void* mem = malloc(size);
     cout << "new got memory " << mem << endl;
@@ -16,6 +17,7 @@ void operator delete(void* mem, size_t) noexcept{
   cout << "delete for " << mem << endl;
   free(mem);
 }
+/* End of -- globally overload the following operators to cout memory */
 
 
 
