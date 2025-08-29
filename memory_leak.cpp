@@ -21,6 +21,7 @@ void operator delete(void* mem, size_t) noexcept{
 
 
 
+// Good class, does not have a leak
 class HeapPoint{
   string* alias;
   public:
@@ -55,6 +56,7 @@ class HeapPoint{
 };
 
 
+// bad class, has memory leak
 class StackPoint{
   string* alias; // all the methods should ensure Point has complete ownership on the memory
 public:
@@ -114,9 +116,9 @@ void test_stack(){
 
 int main()
 {
-    test_heap();
+    test_heap(); // final output has matching number of new and delete calls
 
-    test_stack();
+    test_stack(); // final output has mismatching number of new and delete calls
 
     return 0;
 }
